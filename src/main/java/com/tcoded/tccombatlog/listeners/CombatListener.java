@@ -3,6 +3,7 @@ package com.tcoded.tccombatlog.listeners;
 import com.tcoded.tccombatlog.manager.CombatManager;
 import com.tcoded.tccombatlog.types.CombatSession;
 import org.bukkit.ChatColor;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,20 +35,23 @@ public class CombatListener implements Listener {
             return;
         }
 
-        // Ensure we have an EntityDamageByEntityEvent so we can check the source.
-        if (!(event instanceof EntityDamageByEntityEvent)) {
-            return;
+        // Handle EntityDamageByEntityEvent separately.
+        if (event instanceof EntityDamageByEntityEvent damageEvent) {
+            handleEntityDamageByEntity(damageEvent);
+        } else if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
+                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            handleBlockRelatedDamage(event);
         }
+    }
 
-        EntityDamageByEntityEvent damageEvent = (EntityDamageByEntityEvent) event;
-        // Use Paper API’s getDamageSource() method. We assume it returns an object that has a getEntity() method.
+    private void handleEntityDamageByEntity(EntityDamageByEntityEvent damageEvent) {
         if (damageEvent.getDamageSource() == null) {
             return;
         }
 
         Entity damageSource = damageEvent.getDamageSource().getCausingEntity();
         if (damageSource instanceof Player attacker) {
-            Player victim = (Player) event.getEntity();
+            Player victim = (Player) damageEvent.getEntity();
 
             CombatSession sessionVictim = combatManager.getOrCreateSession(victim);
             Player prevAttackerForVictim = sessionVictim.getAttacker();
@@ -65,6 +69,19 @@ public class CombatListener implements Listener {
                 attacker.sendMessage(ChatColor.RED + "You are now in combat with " + victim.getName() + "!");
             }
         }
+    }
+
+    private void handleBlockRelatedDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+
+        DamageSource damageSource = event.getDamageSource();
+        Entity attacker = damageSource.getCausingEntity();
+        Player playerAttacker = attacker instanceof Player player ? player : null;
+
+        combatManager.tagPlayer(victim, playerAttacker);
+        victim.sendMessage(ChatColor.RED + "You are now in combat due to a block-related damage source!");
     }
 
 }
