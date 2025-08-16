@@ -21,6 +21,7 @@ public class TcCombatLog extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SafeBlockListener(combatManager), this);
         getServer().getPluginManager().registerEvents(new MoveListener(combatManager), this);
         getServer().getPluginManager().registerEvents(new JoinListener(combatManager), this);
+        getServer().getPluginManager().registerEvents(new DeathListener(combatManager), this);
         getServer().getPluginManager().registerEvents(new QuitListener(combatManager), this);
 
         papiHook = new TCCombatLogPlaceholderExpansion(this, combatManager);

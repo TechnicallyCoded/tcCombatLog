@@ -38,8 +38,14 @@ public class CombatSession {
         return isInCombat() ? attacker : null;
     }
 
+    // Reset the combat timer to the max
     public void resetMaxTimer() {
         this.lastCombatTime = System.currentTimeMillis();
+    }
+
+    // Exit combat
+    public void cancelCombat() {
+        this.lastCombatTime = 0L;
     }
 
 }
