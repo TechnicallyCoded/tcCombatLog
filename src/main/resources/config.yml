@@ -1,0 +1,19 @@
+block-commands-by-default: true
+
+allowed-commands:
+  - "^\\/d(upe)?( [0-9]+)?$"
+  - "^\\/w .*$"
+  - "^\\/whisper .*$"
+  - "^\\/msg .*$"
+  - "^\\/minecraft:msg .*$"
+  - "^\\/fmsg .*$"
+  - "^\\/friendmsg .*$"
+  - "^\\/friendlist( [0-9]+)?$"
+  - "^\\/tpahere .*$"
+  - "^\\/team info .*$"
+  - "^\\/clan info .*$"
+  - "^\\/teammsg .*$"
+  - "^\\/tell .*$"
+  - "^\\/ignore .*$"
+
+blocked-commands: []
