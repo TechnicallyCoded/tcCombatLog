@@ -28,7 +28,7 @@ public class TCCombatLogPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-         return "MatLW";
+         return "TCoded";
     }
 
     @Override
