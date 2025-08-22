@@ -1,6 +1,6 @@
 name: tcCombatLog
 main: com.tcoded.tccombatlog.TcCombatLog
-version: 1.0
+version: "${version}"
 api-version: "1.21"
 depend: [WorldGuard]
 
