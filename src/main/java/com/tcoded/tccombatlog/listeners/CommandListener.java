@@ -36,7 +36,7 @@ public class CommandListener implements Listener {
         Config config = configSupplier.get();
 
         // Set our default action
-        boolean allowResult = config.blockByDefault();
+        boolean allowResult = !config.blockByDefault();
 
         // Only check allowlist if our default action is to block
         if (!allowResult) {
