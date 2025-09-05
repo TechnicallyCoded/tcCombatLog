@@ -78,7 +78,10 @@ public class CombatListener implements Listener {
 
         DamageSource damageSource = event.getDamageSource();
         Entity attacker = damageSource.getCausingEntity();
-        Player playerAttacker = attacker instanceof Player player ? player : null;
+
+        if (!(attacker instanceof Player playerAttacker)) {
+            return;
+        }
 
         combatManager.tagPlayer(victim, playerAttacker);
         victim.sendMessage(ChatColor.RED + "You are now in combat due to a block-related damage source!");
