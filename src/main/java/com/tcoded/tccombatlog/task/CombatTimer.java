@@ -1,5 +1,6 @@
 package com.tcoded.tccombatlog.task;
 
+import com.tcoded.tccombatlog.manager.FlyManager;
 import com.tcoded.tccombatlog.types.CombatSession;
 import com.tcoded.tccombatlog.manager.CombatManager;
 import net.kyori.adventure.text.Component;
@@ -15,13 +16,16 @@ import java.util.UUID;
 public class CombatTimer extends BukkitRunnable {
 
     private final CombatManager combatManager;
+    private final FlyManager flyManager;
     private final JavaPlugin plugin;
 
+    // Tracks which players are currently in combat to detect when they leave combat
     private final HashSet<UUID> playersInCombat = new HashSet<>();
 
-    public CombatTimer(JavaPlugin plugin, CombatManager combatManager) {
+    public CombatTimer(JavaPlugin plugin, CombatManager combatManager, FlyManager flyManager) {
         this.plugin = plugin;
         this.combatManager = combatManager;
+        this.flyManager = flyManager;
     }
 
     @Override
@@ -39,6 +43,9 @@ public class CombatTimer extends BukkitRunnable {
                 playersInCombat.remove(player.getUniqueId());
 
                 player.sendActionBar(Component.text("You are no longer in combat.", NamedTextColor.GREEN));
+
+                // Re-enable fly ability if they had it before combat
+                flyManager.enableFly(player);
             }
         }
     }

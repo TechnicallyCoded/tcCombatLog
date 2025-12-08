@@ -17,3 +17,20 @@ allowed-commands:
   - "^\\/ignore .*$"
 
 blocked-commands: []
+
+fly:
+  # Message sent when fly is disabled during combat
+  # Use & for color codes. Empty string to disable message.
+  disable-message: "&cFlight has been disabled during combat!"
+
+  # Sound played when fly is disabled during combat
+  # Empty string to disable sound. Use Bukkit Sound enum names.
+  disable-sound: "ENTITY_ENDERMAN_TELEPORT"
+
+  # Message sent when fly is re-enabled after combat
+  # Empty string to disable message.
+  enable-message: "&aYou can now fly!"
+
+  # Sound played when fly is re-enabled after combat
+  # Empty string to disable sound. Use Bukkit Sound enum names.
+  enable-sound: "BLOCK_LEVER_CLICK"

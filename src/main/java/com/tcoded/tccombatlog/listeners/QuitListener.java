@@ -1,6 +1,7 @@
 package com.tcoded.tccombatlog.listeners;
 
 import com.tcoded.tccombatlog.manager.CombatManager;
+import com.tcoded.tccombatlog.manager.FlyManager;
 import com.tcoded.tccombatlog.types.CombatSession;
 import com.tcoded.tccombatlog.util.MsgUtil;
 import org.bukkit.ChatColor;
@@ -12,9 +13,11 @@ import org.bukkit.entity.Player;
 public class QuitListener implements Listener {
 
     private final CombatManager combatManager;
+    private final FlyManager flyManager;
 
-    public QuitListener(CombatManager combatManager) {
+    public QuitListener(CombatManager combatManager, FlyManager flyManager) {
         this.combatManager = combatManager;
+        this.flyManager = flyManager;
     }
 
     @EventHandler
@@ -32,6 +35,9 @@ public class QuitListener implements Listener {
 
         // Remove the combat session.
         combatManager.removeSession(player);
+
+        // Clean up fly data to prevent memory leaks
+        flyManager.cleanupPlayer(player);
     }
 
 }
