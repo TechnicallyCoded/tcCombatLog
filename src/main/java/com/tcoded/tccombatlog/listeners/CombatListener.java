@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
  */
 public class CombatListener implements Listener {
 
+    private static final String BYPASS_COMBAT_PERMISSION = "tccombatlog.bypass.combat";
+
     private final CombatManager combatManager;
     private final FlyManager flyManager;
 
@@ -57,24 +59,31 @@ public class CombatListener implements Listener {
         if (damageSource instanceof Player attacker) {
             Player victim = (Player) damageEvent.getEntity();
 
+            boolean tagVictim = !victim.hasPermission(BYPASS_COMBAT_PERMISSION);
+            boolean tagAttacker = !attacker.hasPermission(BYPASS_COMBAT_PERMISSION);
+
             CombatSession sessionVictim = combatManager.getOrCreateSession(victim);
             Player prevAttackerForVictim = sessionVictim.getAttacker();
 
             CombatSession sessionAttacker = combatManager.getOrCreateSession(attacker);
             Player prevAttackerForAttacker = sessionAttacker.getAttacker();
 
-            combatManager.tagPlayer(victim, attacker);
-
-            // Disable fly for both players, send message only if they weren't already in combat
-            flyManager.disableFly(victim, prevAttackerForVictim == null);
-            flyManager.disableFly(attacker, prevAttackerForAttacker == null);
-
-            if (prevAttackerForVictim == null) {
-                victim.sendMessage(ChatColor.RED + "You are now in combat with " + attacker.getName() + "!");
+            if (tagVictim || tagAttacker) {
+                combatManager.tagPlayers(victim, attacker, tagVictim, tagAttacker);
             }
 
-            if (prevAttackerForAttacker == null) {
-                attacker.sendMessage(ChatColor.RED + "You are now in combat with " + victim.getName() + "!");
+            if (tagVictim) {
+                flyManager.disableFly(victim, prevAttackerForVictim == null);
+                if (prevAttackerForVictim == null) {
+                    victim.sendMessage(ChatColor.RED + "You are now in combat with " + attacker.getName() + "!");
+                }
+            }
+
+            if (tagAttacker) {
+                flyManager.disableFly(attacker, prevAttackerForAttacker == null);
+                if (prevAttackerForAttacker == null) {
+                    attacker.sendMessage(ChatColor.RED + "You are now in combat with " + victim.getName() + "!");
+                }
             }
         }
     }
@@ -91,9 +100,17 @@ public class CombatListener implements Listener {
             return;
         }
 
-        combatManager.tagPlayer(victim, playerAttacker);
-        flyManager.disableFly(victim, false);
-        victim.sendMessage(ChatColor.RED + "You are now in combat due to a block-related damage source!");
+        boolean tagVictim = !victim.hasPermission(BYPASS_COMBAT_PERMISSION);
+        boolean tagAttacker = !playerAttacker.hasPermission(BYPASS_COMBAT_PERMISSION);
+
+        if (tagVictim || tagAttacker) {
+            combatManager.tagPlayers(victim, playerAttacker, tagVictim, tagAttacker);
+        }
+
+        if (tagVictim) {
+            flyManager.disableFly(victim, false);
+            victim.sendMessage(ChatColor.RED + "You are now in combat due to a block-related damage source!");
+        }
     }
 
 }

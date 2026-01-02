@@ -8,3 +8,11 @@ commands:
   tccombatlog:
     permission: "tccombatlog.command.tccombatlog"
     aliases: [combatlog, combat, tccl, tcl]
+
+permissions:
+  tccombatlog.bypass.combat:
+    description: "Prevents the player from being placed into combat. Attacking players are still tagged."
+    default: false
+  tccombatlog.bypass.command:
+    description: "Allows running any commands while in combat."
+    default: false

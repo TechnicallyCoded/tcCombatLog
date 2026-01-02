@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 public class CommandListener implements Listener {
 
+    private static final String BYPASS_COMMAND_PERMISSION = "tccombatlog.bypass.command";
+
     private final Supplier<Config> configSupplier;
     private final CombatManager combatManager;
 
@@ -26,6 +28,8 @@ public class CommandListener implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
+
+        if (player.hasPermission(BYPASS_COMMAND_PERMISSION)) return;
 
         CombatSession session = combatManager.getSession(player);
         if (session == null) return;

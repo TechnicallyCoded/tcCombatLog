@@ -35,13 +35,21 @@ public class CombatManager {
         return setbackLocations.get(player.getUniqueId());
     }
 
-    // Tags the victim with a combat session update using the attacker.
     public void tagPlayer(Player victim, Player attacker) {
-        CombatSession victimSession = getOrCreateSession(victim);
-        victimSession.updateCombat(attacker);
+        tagPlayers(victim, attacker, true, true);
+    }
 
-        CombatSession attackerSession = getOrCreateSession(attacker);
-        attackerSession.updateCombat(victim);
+    // Tags players into combat with per-player control to support bypass permissions.
+    public void tagPlayers(Player victim, Player attacker, boolean tagVictim, boolean tagAttacker) {
+        if (tagVictim) {
+            CombatSession victimSession = getOrCreateSession(victim);
+            victimSession.updateCombat(attacker);
+        }
+
+        if (tagAttacker) {
+            CombatSession attackerSession = getOrCreateSession(attacker);
+            attackerSession.updateCombat(victim);
+        }
     }
 
     public void resetMaxTimer(Player player) {
