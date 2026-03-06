@@ -27,7 +27,7 @@ public class QuitListener implements Listener {
         // If the player is currently in combat, "kill" them.
         CombatSession session = combatManager.getSession(player);
 
-        if (session != null && session.isInCombat()) {
+        if (session != null && session.isInCombat() && event.getReason() == PlayerQuitEvent.QuitReason.DISCONNECTED) {
             player.damage(0, session.getAttacker());
             player.setHealth(0.0);
             MsgUtil.broadcast(ChatColor.RED + player.getName() + " combat logged and was killed!");
